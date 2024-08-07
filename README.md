@@ -4,3 +4,6 @@
 
 Especificação Trabalho: 
 Cadastro Aluno, Professor e Disciplina. 
+ ComboBox Aluno seleciona Discplina.  
+ ComboBox Disciplina seleciona Professor. 
+ CRUD de todos.
