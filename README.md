@@ -3,3 +3,4 @@
 
 
 Especificação Trabalho: 
+Cadastro Aluno, Professor e Disciplina. 
