@@ -4,19 +4,44 @@
  */
 package br.edu.ifsul.cc.lpoo.view;
 
-import br.edu.ifsul.cc.lpoo.model.Alunos;
+import br.edu.ifsul.cc.lpoo.lpoo_danca.dao.PersisteciaJPA;
+import br.edu.ifsul.cc.lpoo.lpoo_danca.model.Modalidades;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.junit.After;
+import org.junit.Before;
 /**
  *
  * @author 20221PF.CC0003
  */
 public class TelaAlunos extends javax.swing.JFrame {
 
+     DefaultListModel<Modalidades> listModel = new DefaultListModel<>();
     /**
      * Creates new form TelaAlunos
      */
     public TelaAlunos() {
         initComponents();
+        lstAlunos.setModel(listModel);
+        
+        mostraAlunos();
+    }
+    
+    private void mostraAlunos() {
+        PersistenciaJPA jpa = new PersistenciaJPA();
+        jpa.conexaoAberta();
+        
+        List<Alunos> alunos = jpa.getModalidades();
+        listModel.clear();
+        
+        
+        for(Alunos aluno : alunos){
+            listModel.addElement(aluno);      
+        }
+        
+        jpa.fecharConexao();
     }
 
     /**
@@ -162,7 +187,5 @@ public class TelaAlunos extends javax.swing.JFrame {
     private javax.swing.JList<Alunos> lstAlunos;
     // End of variables declaration//GEN-END:variables
 
-    private void mostraAlunos() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+   
 }

@@ -5,9 +5,11 @@
  */
 package br.edu.ifsul.cc.lpoo.dao;
 
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import br.edu.ifsul.cc.lpoo.model.Alunos;
 
 /**
  *
@@ -53,6 +55,16 @@ public class PersistenciaJPA implements InterfacePersistencia{
         entity.getTransaction().begin();// abrir a transacao.
         entity.remove(o); //realiza o delete
         entity.getTransaction().commit(); //comita a transacao (comando sql)   
+    }
+    
+    public List<Alunos> getAlunos() {
+        return entity.createQuery("SELECT m FROM Alunos m", Alunos.class).getResultList();
+}
+
+    public List<Professores> getProfessores() {
+        
+      return entity.createQuery("SELECT m FROM Professores m", Professores.class).getResultList();
+
     }
     
 }
