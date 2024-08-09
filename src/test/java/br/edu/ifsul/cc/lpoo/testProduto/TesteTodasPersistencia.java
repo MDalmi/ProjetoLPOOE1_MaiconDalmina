@@ -7,7 +7,7 @@ package br.edu.ifsul.cc.lpoo.testProduto;
 import br.edu.ifsul.cc.lpoo.model.Alunos;
 import br.edu.ifsul.cc.lpoo.model.Disciplinas;
 import br.edu.ifsul.cc.lpoo.model.Professores;
-import br.edu.ifsul.cc.lpoo.trabalhogit.dao.PersistenciaJPA;
+import br.edu.ifsul.cc.lpoo.dao.PersistenciaJPA;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;

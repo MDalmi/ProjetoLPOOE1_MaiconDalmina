@@ -5,7 +5,7 @@
  */
 package br.edu.ifsul.cc.lpoo.testProduto;
 
-import br.edu.ifsul.cc.lpoo.trabalhogit.dao.PersistenciaJPA;
+import br.edu.ifsul.cc.lpoo.dao.PersistenciaJPA;
 import org.junit.Test;
 
 /**
