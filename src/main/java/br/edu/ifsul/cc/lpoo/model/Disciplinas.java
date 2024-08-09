@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.edu.ifsul.cc.lpoo.TrabalhoGit_LPOO;
+package br.edu.ifsul.cc.lpoo.model;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -32,7 +33,7 @@ public class Disciplinas implements Serializable {
     @Column(nullable = false, length = 120)
     private String nomeDisciplina;
     
-    @ManyToMany
+    @OneToMany
     private Collection<Alunos> aluno;
 
     @ManyToOne
