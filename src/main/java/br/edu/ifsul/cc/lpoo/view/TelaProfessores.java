@@ -4,17 +4,42 @@
  */
 package br.edu.ifsul.cc.lpoo.view;
 
+import br.edu.ifsul.cc.lpoo.dao.PersistenciaJPA;
+import br.edu.ifsul.cc.lpoo.model.Disciplinas;
+import br.edu.ifsul.cc.lpoo.model.Professores;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author 20221PF.CC0003
  */
 public class TelaProfessores extends javax.swing.JFrame {
-
+DefaultListModel<Professores> listModel = new DefaultListModel<>();
     /**
      * Creates new form TelaProfessores
      */
     public TelaProfessores() {
         initComponents();
+        lstProf.setModel(listModel);
+        
+        mostraProf();
+    }
+    
+    private void mostraProf() {
+        PersistenciaJPA jpa = new PersistenciaJPA();
+        jpa.conexaoAberta();
+        
+        List<Professores> disc = jpa.getProfessores();
+        listModel.clear();
+        
+        
+        for(Professores prof : disc){
+            listModel.addElement(prof);      
+        }
+        
+        jpa.fecharConexao();
     }
 
     /**
@@ -26,21 +51,115 @@ public class TelaProfessores extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lstProf = new javax.swing.JList<>();
+        btnNovo = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnExcluir = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setText("Professores");
+
+        jScrollPane1.setViewportView(lstProf);
+
+        btnNovo.setText("Novo");
+        btnNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovoActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(56, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnNovo)
+                        .addGap(35, 35, 35)
+                        .addComponent(btnExcluir)
+                        .addGap(36, 36, 36)
+                        .addComponent(btnEditar))
+                    .addComponent(jLabel1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnNovo)
+                    .addComponent(btnEditar)
+                    .addComponent(btnExcluir))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+         TelaProfessoresNovo dialog = new TelaProfessoresNovo(this, true);  
+         dialog.setVisible(true);
+         mostraProf();
+    }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+       PersistenciaJPA jpa = new PersistenciaJPA();
+        
+         Professores profSele = lstProf.getSelectedValue();
+        
+            int confirmacaoDel = JOptionPane.showConfirmDialog(rootPane,
+                    "Tem certeza que deseja remover essa disciplina:  " + profSele.getNomeProfessor());
+            if (confirmacaoDel == JOptionPane.YES_OPTION) {
+                try {
+                    
+                    jpa.conexaoAberta();
+                    jpa.remover(profSele);
+                    
+                    mostraProf();
+                    JOptionPane.showMessageDialog(rootPane, "Disciplina Removida!");
+                } catch (Exception e) {
+                    System.err.println("Erro ao excluir disciplina: " + e.getMessage());
+                } finally {
+                    jpa.fecharConexao();
+                }
+            }
+    }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        Professores discSele = lstProf.getSelectedValue();
+        if (discSele != null) {
+           TelaProfessoresEdit dialog = new TelaProfessoresEdit(this, true);
+                dialog.setProfessores(discSele);
+                dialog.setVisible(true);
+                mostraProf();
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhuma disciplina selecionada.", "Atenção", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +197,11 @@ public class TelaProfessores extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnExcluir;
+    private javax.swing.JButton btnNovo;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<Professores> lstProf;
     // End of variables declaration//GEN-END:variables
 }

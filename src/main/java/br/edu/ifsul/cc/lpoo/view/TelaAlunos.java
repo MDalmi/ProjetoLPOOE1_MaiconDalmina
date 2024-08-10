@@ -4,21 +4,20 @@
  */
 package br.edu.ifsul.cc.lpoo.view;
 
-import br.edu.ifsul.cc.lpoo.lpoo_danca.dao.PersisteciaJPA;
-import br.edu.ifsul.cc.lpoo.lpoo_danca.model.Modalidades;
+
+import br.edu.ifsul.cc.lpoo.dao.PersistenciaJPA;
+import br.edu.ifsul.cc.lpoo.model.Alunos;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import org.junit.After;
-import org.junit.Before;
 /**
  *
  * @author 20221PF.CC0003
  */
 public class TelaAlunos extends javax.swing.JFrame {
 
-     DefaultListModel<Modalidades> listModel = new DefaultListModel<>();
+     DefaultListModel<Alunos> listModel = new DefaultListModel<>();
     /**
      * Creates new form TelaAlunos
      */
@@ -33,7 +32,7 @@ public class TelaAlunos extends javax.swing.JFrame {
         PersistenciaJPA jpa = new PersistenciaJPA();
         jpa.conexaoAberta();
         
-        List<Alunos> alunos = jpa.getModalidades();
+        List<Alunos> alunos = jpa.getAlunos();
         listModel.clear();
         
         
@@ -75,6 +74,11 @@ public class TelaAlunos extends javax.swing.JFrame {
         });
 
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         btnEditar.setText("Editar");
         btnEditar.addActionListener(new java.awt.event.ActionListener() {
@@ -124,20 +128,47 @@ public class TelaAlunos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-        // TODO add your handling code here:
+        
+           TelaAlunosNovo dialog = new TelaAlunosNovo(this, true);  
+           dialog.setVisible(true);
+           mostraAlunos();
+      
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-         Alunos alunoSelecionado = lstAlunos.getSelectedValue();
+        Alunos alunoSelecionado = lstAlunos.getSelectedValue();
         if (alunoSelecionado != null) {
            TelaAlunosEdit dialog = new TelaAlunosEdit(this, true);
                 dialog.setAlunos(alunoSelecionado);
                 dialog.setVisible(true);
                 mostraAlunos();
         } else {
-            JOptionPane.showMessageDialog(this, "Nenhuma modalidade selecionada.", "Atenção", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Nenhum aluno selecionado.", "Atenção", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        PersistenciaJPA jpa = new PersistenciaJPA();
+        
+         Alunos alSele = lstAlunos.getSelectedValue();
+        
+            int confirmacaoDel = JOptionPane.showConfirmDialog(rootPane,
+                    "Tem certeza que deseja remover esse aluno:  " + alSele.getNome());
+            if (confirmacaoDel == JOptionPane.YES_OPTION) {
+                try {
+                    
+                    jpa.conexaoAberta();
+                    jpa.remover(alSele);
+                    
+                    mostraAlunos();
+                    JOptionPane.showMessageDialog(rootPane, "Aluno Removido!");
+                } catch (Exception e) {
+                    System.err.println("Erro ao excluir aluno: " + e.getMessage());
+                } finally {
+                    jpa.fecharConexao();
+                }
+            }
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     /**
      * @param args the command line arguments

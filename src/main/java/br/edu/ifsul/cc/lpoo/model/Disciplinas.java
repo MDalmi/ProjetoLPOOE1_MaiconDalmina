@@ -6,6 +6,7 @@ package br.edu.ifsul.cc.lpoo.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,7 +35,7 @@ public class Disciplinas implements Serializable {
     private String nomeDisciplina;
     
     @OneToMany
-    private Collection<Alunos> aluno;
+    private List<Alunos> aluno;
 
     @ManyToOne
     @JoinColumn
@@ -44,7 +45,7 @@ public class Disciplinas implements Serializable {
     public Disciplinas() {
     }
 
-    public Disciplinas(Integer id, String nomeDisciplina, Collection<Alunos> aluno, Professores professor) {
+    public Disciplinas(Integer id, String nomeDisciplina, List<Alunos> aluno, Professores professor) {
         this.id = id;
         this.nomeDisciplina = nomeDisciplina;
         this.aluno = aluno;
@@ -61,7 +62,7 @@ public class Disciplinas implements Serializable {
 
     
 
-    public void setAluno(Collection<Alunos> aluno) {
+    public void setAluno(List<Alunos> aluno) {
         this.aluno = aluno;
     }
 
@@ -73,7 +74,7 @@ public class Disciplinas implements Serializable {
         this.nomeDisciplina = nomeDisciplina;
     }
 
-    public Collection<Alunos> getAluno() {
+    public List<Alunos> getAluno() {
         return aluno;
     }
 
@@ -83,6 +84,11 @@ public class Disciplinas implements Serializable {
 
     public String getNomeDisciplina() {
         return nomeDisciplina;
+    }
+
+    @Override
+    public String toString() {
+        return getNomeDisciplina(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
     }
     
     

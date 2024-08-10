@@ -3,8 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/AWTForms/Dialog.java to edit this template
  */
 package br.edu.ifsul.cc.lpoo.view;
+import br.edu.ifsul.cc.lpoo.dao.PersistenciaJPA;
 import br.edu.ifsul.cc.lpoo.model.Alunos;
 import br.edu.ifsul.cc.lpoo.model.Disciplinas;
+import java.util.List;
 import javax.swing.JOptionPane;
 /**
  *
@@ -27,10 +29,26 @@ public class TelaAlunosEdit extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
     }
+    
+    public void listarProfessores() {
+        cmbDisciplinas.removeAllItems();
+        PersistenciaJPA jpa = new PersistenciaJPA();
+        jpa.conexaoAberta();
+        List<Disciplinas> lista = jpa.getDisciplinas();
+
+        for (Disciplinas o : lista) {
+            cmbDisciplinas.addItem(o);
+        }
+
+        jpa.fecharConexao();
+    }
 
      public void setAlunos(Alunos aluno) {   
         this.aluno = aluno;
-       
+        txtIDAluno.setText(aluno.getId() != null ? aluno.getId().toString() : "");
+        txtNomeAluno.setText(aluno.getNome());
+        cmbDisciplinas.getModel().setSelectedItem(aluno.getDisciplina().getNomeDisciplina());
+        listarProfessores();
     }
     
     /**
@@ -50,6 +68,7 @@ public class TelaAlunosEdit extends javax.swing.JDialog {
         txtIDAluno = new javax.swing.JTextField();
         txtNomeAluno = new javax.swing.JTextField();
         btnSalvar = new javax.swing.JButton();
+        btnCancela = new javax.swing.JButton();
 
         setAutoRequestFocus(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -57,7 +76,6 @@ public class TelaAlunosEdit extends javax.swing.JDialog {
                 closeDialog(evt);
             }
         });
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         jLabel1.setText("ID Aluno");
 
@@ -76,6 +94,13 @@ public class TelaAlunosEdit extends javax.swing.JDialog {
             }
         });
 
+        btnCancela.setText("Cancelar");
+        btnCancela.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout dialogAlunosLayout = new javax.swing.GroupLayout(dialogAlunos);
         dialogAlunos.setLayout(dialogAlunosLayout);
         dialogAlunosLayout.setHorizontalGroup(
@@ -83,17 +108,21 @@ public class TelaAlunosEdit extends javax.swing.JDialog {
             .addGroup(dialogAlunosLayout.createSequentialGroup()
                 .addGap(44, 44, 44)
                 .addGroup(dialogAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSalvar)
                     .addComponent(jLabel4)
                     .addComponent(cmbDisciplinas, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(dialogAlunosLayout.createSequentialGroup()
-                        .addGroup(dialogAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtIDAluno)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(51, 51, 51)
-                        .addGroup(dialogAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNomeAluno, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))))
+                    .addGroup(dialogAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, dialogAlunosLayout.createSequentialGroup()
+                            .addComponent(btnSalvar)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnCancela))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, dialogAlunosLayout.createSequentialGroup()
+                            .addGroup(dialogAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtIDAluno)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGap(51, 51, 51)
+                            .addGroup(dialogAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtNomeAluno, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3)))))
                 .addContainerGap(116, Short.MAX_VALUE))
             .addGroup(dialogAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(dialogAlunosLayout.createSequentialGroup()
@@ -117,7 +146,9 @@ public class TelaAlunosEdit extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmbDisciplinas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
-                .addComponent(btnSalvar)
+                .addGroup(dialogAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSalvar)
+                    .addComponent(btnCancela))
                 .addContainerGap(54, Short.MAX_VALUE))
             .addGroup(dialogAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(dialogAlunosLayout.createSequentialGroup()
@@ -140,9 +171,33 @@ public class TelaAlunosEdit extends javax.swing.JDialog {
     }//GEN-LAST:event_closeDialog
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // TODO add your handling code here:
+        SalvaAluno();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
+    private void btnCancelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelaActionPerformed
+       dispose();
+    }//GEN-LAST:event_btnCancelaActionPerformed
+
+    private void SalvaAluno() {
+        
+            PersistenciaJPA jpa = new PersistenciaJPA();
+            try {
+                jpa.conexaoAberta();
+                Alunos modaJPA = (Alunos) jpa.find(Alunos.class, aluno.getId());
+                modaJPA.setNome(txtNomeAluno.getText());
+
+                Disciplinas disc = (Disciplinas) cmbDisciplinas.getSelectedItem();
+                modaJPA.setDisciplina(disc);
+
+                jpa.persist(modaJPA);
+                jpa.fecharConexao();
+                dispose();
+            } catch (Exception e) {
+                System.err.println("Erro ao salvar aluno!");
+                
+            }
+        
+    }
     /**
      * @param args the command line arguments
      */
@@ -162,6 +217,7 @@ public class TelaAlunosEdit extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancela;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JComboBox<Disciplinas> cmbDisciplinas;
     private javax.swing.JPanel dialogAlunos;

@@ -65,6 +65,11 @@ public class Professores implements Serializable {
     public String getNomeProfessor() {
         return nomeProfessor;
     }
+
+    @Override
+    public String toString() {
+        return getNomeProfessor();// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
     
     
     

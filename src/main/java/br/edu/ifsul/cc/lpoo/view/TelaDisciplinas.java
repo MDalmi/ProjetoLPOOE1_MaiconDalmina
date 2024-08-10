@@ -4,20 +4,44 @@
  */
 package br.edu.ifsul.cc.lpoo.view;
 
+import br.edu.ifsul.cc.lpoo.dao.PersistenciaJPA;
+import br.edu.ifsul.cc.lpoo.model.Alunos;
 import br.edu.ifsul.cc.lpoo.model.Disciplinas;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author 20221PF.CC0003
  */
 public class TelaDisciplinas extends javax.swing.JFrame {
-
+    DefaultListModel<Disciplinas> listModel = new DefaultListModel<>();
     /**
      * Creates new form TelaDisciplinas
      */
     public TelaDisciplinas() {
         initComponents();
+        lstDisc.setModel(listModel);
+        
+        mostraDisc();
     }
+    
+     private void mostraDisc() {
+        PersistenciaJPA jpa = new PersistenciaJPA();
+        jpa.conexaoAberta();
+        
+        List<Disciplinas> disc = jpa.getDisciplinas();
+        listModel.clear();
+        
+        
+        for(Disciplinas disciplina : disc){
+            listModel.addElement(disciplina);      
+        }
+        
+        jpa.fecharConexao();
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -30,35 +54,35 @@ public class TelaDisciplinas extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        lstDisc = new javax.swing.JList<>();
+        btnNova = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnExcluir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("DISCIPLINAS");
 
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(lstDisc);
 
-        jButton1.setText("Nova");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnNova.setText("Nova");
+        btnNova.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnNovaActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Editar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnEditarActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Excluir");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnExcluirActionPerformed(evt);
             }
         });
 
@@ -72,11 +96,11 @@ public class TelaDisciplinas extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnNova, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(18, 18, 18)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGap(18, 18, 18)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(57, Short.MAX_VALUE))
         );
@@ -89,26 +113,55 @@ public class TelaDisciplinas extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(btnNova)
+                    .addComponent(btnEditar)
+                    .addComponent(btnExcluir))
                 .addContainerGap(76, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnNovaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovaActionPerformed
+           TelaDiscNova dialog = new TelaDiscNova(this, true);  
+           dialog.setVisible(true);
+           mostraDisc();
+    }//GEN-LAST:event_btnNovaActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        Disciplinas discSele = lstDisc.getSelectedValue();
+        if (discSele != null) {
+           TelaDisciplinasEdit dialog = new TelaDisciplinasEdit(this, true);
+                dialog.SetDisciplina(discSele);
+                dialog.setVisible(true);
+                mostraDisc();
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhuma disciplina selecionada.", "Atenção", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+       PersistenciaJPA jpa = new PersistenciaJPA();
+        
+         Disciplinas DiscSele = lstDisc.getSelectedValue();
+        
+            int confirmacaoDel = JOptionPane.showConfirmDialog(rootPane,
+                    "Tem certeza que deseja remover essa disciplina:  " + DiscSele.getNomeDisciplina());
+            if (confirmacaoDel == JOptionPane.YES_OPTION) {
+                try {
+                    
+                    jpa.conexaoAberta();
+                    jpa.remover(DiscSele);
+                    
+                    mostraDisc();
+                    JOptionPane.showMessageDialog(rootPane, "Professor(a) Removido(a)!");
+                } catch (Exception e) {
+                    System.err.println("Erro ao excluir Professor(a): " + e.getMessage());
+                } finally {
+                    jpa.fecharConexao();
+                }
+            }
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -146,12 +199,12 @@ public class TelaDisciplinas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnExcluir;
+    private javax.swing.JButton btnNova;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JList<Disciplinas> jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<Disciplinas> lstDisc;
     // End of variables declaration//GEN-END:variables
 
    

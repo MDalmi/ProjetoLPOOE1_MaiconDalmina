@@ -4,23 +4,73 @@
  */
 package br.edu.ifsul.cc.lpoo.view;
 
+import br.edu.ifsul.cc.lpoo.dao.PersistenciaJPA;
 import br.edu.ifsul.cc.lpoo.model.Alunos;
+import br.edu.ifsul.cc.lpoo.model.Disciplinas;
 import br.edu.ifsul.cc.lpoo.model.Professores;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author 20221PF.CC0003
  */
 public class TelaDisciplinasEdit extends java.awt.Dialog {
-
+    
+    DefaultListModel<Alunos> listModel = new DefaultListModel<>();
+    private Disciplinas disc;
     /**
      * Creates new form TelaDisciplinasEdit
      */
     public TelaDisciplinasEdit(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        lstAlunosDisciplina.setModel(listModel);
+        
+        
+        
+        
     }
+    
+    public void SetDisciplina(Disciplinas disc){
+        this.disc = disc;
+        txtIDDisciplina.setText(disc.getId() != null ? disc.getId().toString() : "");
+        txtNomeDisciplina.setText(disc.getNomeDisciplina()); 
+        
+        PersistenciaJPA jpa = new PersistenciaJPA();
+        jpa.conexaoAberta();
+        
+        List<Alunos> alunos = jpa.getAlunosDISC(disc);
+        listModel.clear();
+        
+        
+        for(Alunos aluno : alunos){
+            listModel.addElement(aluno);      
+        }
+        jpa.fecharConexao();
+   
+        mostraProf();
+    }
+    
+    public void mostraProf() {
+        cmbProfessores.removeAllItems();
+        PersistenciaJPA jpa = new PersistenciaJPA();
+        jpa.conexaoAberta();
+        List<Professores> lista = jpa.getProfessores();
 
+        for (Professores o : lista) {
+            cmbProfessores.addItem(o);
+        }
+
+        jpa.fecharConexao();
+    }
+    
+     
+        
+   
+        
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,15 +87,19 @@ public class TelaDisciplinasEdit extends java.awt.Dialog {
         cmbProfessores = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         btnSalvar = new javax.swing.JButton();
-        btnEditarListaAlunos = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         lstAlunosDisciplina = new javax.swing.JList<>();
+        btnCancela = new javax.swing.JButton();
+
+        setBackground(java.awt.Color.white);
 
         jLabel1.setText("ID Disciplina");
 
         jLabel2.setText("Nome Disciplina");
 
         jLabel3.setText("Alunos");
+
+        txtIDDisciplina.setEditable(false);
 
         jLabel4.setText("Professores");
 
@@ -56,9 +110,15 @@ public class TelaDisciplinasEdit extends java.awt.Dialog {
             }
         });
 
-        btnEditarListaAlunos.setText("Editar Lista");
-
+        lstAlunosDisciplina.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jScrollPane2.setViewportView(lstAlunosDisciplina);
+
+        btnCancela.setText("Cancelar");
+        btnCancela.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -67,26 +127,20 @@ public class TelaDisciplinasEdit extends java.awt.Dialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnEditarListaAlunos, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel3)
-                            .addComponent(txtIDDisciplina)
-                            .addComponent(jScrollPane2))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(59, 59, 59)
-                                .addComponent(jLabel2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(60, 60, 60)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4)
-                                    .addComponent(cmbProfessores, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtNomeDisciplina, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(jLabel3)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(txtIDDisciplina, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(txtNomeDisciplina, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbProfessores, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnCancela, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSalvar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -106,22 +160,26 @@ public class TelaDisciplinasEdit extends java.awt.Dialog {
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cmbProfessores, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
-                        .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEditarListaAlunos)
-                .addGap(11, 11, 11))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnCancela, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(15, 15, 15))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // TODO add your handling code here:
+        SalvaDisc();
     }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void btnCancelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelaActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnCancelaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -142,7 +200,7 @@ public class TelaDisciplinasEdit extends java.awt.Dialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnEditarListaAlunos;
+    private javax.swing.JButton btnCancela;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JComboBox<Professores> cmbProfessores;
     private javax.swing.JLabel jLabel1;
@@ -154,4 +212,23 @@ public class TelaDisciplinasEdit extends java.awt.Dialog {
     private javax.swing.JTextField txtIDDisciplina;
     private javax.swing.JTextField txtNomeDisciplina;
     // End of variables declaration//GEN-END:variables
+
+    private void SalvaDisc() {
+ PersistenciaJPA jpa = new PersistenciaJPA();
+            try {
+                jpa.conexaoAberta();
+                Disciplinas disc1 = (Disciplinas) jpa.find(Disciplinas.class, disc.getId());
+                disc1.setNomeDisciplina(txtNomeDisciplina.getText());
+
+                Professores p1 = (Professores) cmbProfessores.getSelectedItem();
+                disc1.setProfessor(p1);
+                
+
+                jpa.persist(disc1);
+                jpa.fecharConexao();
+                dispose();
+            } catch (Exception e) {
+                System.err.println("Erro ao salvar disciplina!");
+                
+            }    }
 }

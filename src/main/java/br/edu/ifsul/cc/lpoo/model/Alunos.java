@@ -71,6 +71,11 @@ public class Alunos implements Serializable{
         this.disciplina = disciplina;
     }
 
+    @Override
+    public String toString() {
+        return getNome(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
+
     
     
     

@@ -10,6 +10,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import br.edu.ifsul.cc.lpoo.model.Alunos;
+import br.edu.ifsul.cc.lpoo.model.Disciplinas;
+import br.edu.ifsul.cc.lpoo.model.Professores;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -51,19 +55,51 @@ public class PersistenciaJPA implements InterfacePersistencia{
     }
 
     @Override
-    public void remover(Object o) throws Exception {
-        entity.getTransaction().begin();// abrir a transacao.
-        entity.remove(o); //realiza o delete
-        entity.getTransaction().commit(); //comita a transacao (comando sql)   
+    public void remover(Object obj) {
+        EntityTransaction transaction = entity.getTransaction();
+    try {
+        transaction.begin();
+        Object managedObj = entity.merge(obj); // Anexa o objeto ao contexto de persistência
+        entity.remove(managedObj); // Remove o objeto gerenciado
+        transaction.commit();
+    } catch (Exception e) {
+        if (transaction.isActive()) {
+            transaction.rollback();
+        }
+        throw e;
+    }
     }
     
     public List<Alunos> getAlunos() {
         return entity.createQuery("SELECT m FROM Alunos m", Alunos.class).getResultList();
 }
+    
+    
+    public List<Alunos> getAlunosDISC(Disciplinas disciplinaId) {
+    return entity.createQuery(
+            "SELECT a FROM Alunos a WHERE a.disciplina = :disciplinaId", 
+            Alunos.class)
+        .setParameter("disciplinaId", disciplinaId)
+        .getResultList();
+    }
+    
+    public List<Disciplinas> getDisciplinasPROF(Professores profID) {
+    return entity.createQuery(
+            "SELECT a FROM Disciplinas a WHERE a.professor = :profID", 
+            Disciplinas.class)
+        .setParameter("profID", profID)
+        .getResultList();
+}
 
     public List<Professores> getProfessores() {
         
       return entity.createQuery("SELECT m FROM Professores m", Professores.class).getResultList();
+
+    }
+    
+    public List<Disciplinas> getDisciplinas() {
+        
+      return entity.createQuery("SELECT m FROM Disciplinas m", Disciplinas.class).getResultList();
 
     }
     
