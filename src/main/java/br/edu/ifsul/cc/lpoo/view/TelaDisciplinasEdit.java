@@ -37,34 +37,35 @@ public class TelaDisciplinasEdit extends java.awt.Dialog {
         this.disc = disc;
         txtIDDisciplina.setText(disc.getId() != null ? disc.getId().toString() : "");
         txtNomeDisciplina.setText(disc.getNomeDisciplina()); 
+        cmbProfessores.removeAllItems();
+        
+        cmbProfessores.addItem(disc.getProfessor());
+        Professores prof = disc.getProfessor();
         
         PersistenciaJPA jpa = new PersistenciaJPA();
         jpa.conexaoAberta();
         
+        List<Professores> lista = jpa.getProfessores();
+
+        
+        for (Professores o : lista) {
+            if(prof.getId() != o.getId())
+                cmbProfessores.addItem(o);
+        }
+        
+        
         List<Alunos> alunos = jpa.getAlunosDISC(disc);
         listModel.clear();
         
-        
+     
         for(Alunos aluno : alunos){
             listModel.addElement(aluno);      
         }
         jpa.fecharConexao();
    
-        mostraProf();
     }
     
-    public void mostraProf() {
-        cmbProfessores.removeAllItems();
-        PersistenciaJPA jpa = new PersistenciaJPA();
-        jpa.conexaoAberta();
-        List<Professores> lista = jpa.getProfessores();
-
-        for (Professores o : lista) {
-            cmbProfessores.addItem(o);
-        }
-
-        jpa.fecharConexao();
-    }
+  
     
      
         

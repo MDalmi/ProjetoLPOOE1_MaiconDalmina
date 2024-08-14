@@ -140,7 +140,7 @@ DefaultListModel<Professores> listModel = new DefaultListModel<>();
                     jpa.remover(profSele);
                     
                     mostraProf();
-                    JOptionPane.showMessageDialog(rootPane, "Disciplina Removida!");
+                    JOptionPane.showMessageDialog(rootPane, "Professor Removido!");
                 } catch (Exception e) {
                     System.err.println("Erro ao excluir disciplina: " + e.getMessage());
                 } finally {
@@ -157,7 +157,7 @@ DefaultListModel<Professores> listModel = new DefaultListModel<>();
                 dialog.setVisible(true);
                 mostraProf();
         } else {
-            JOptionPane.showMessageDialog(this, "Nenhuma disciplina selecionada.", "Atenção", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Nenhuma professor selecionado.", "Atenção", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btnEditarActionPerformed
 
